@@ -1,12 +1,12 @@
-🛑 Client-Side Sensitive Data Exposure on Hertz.com – Full Credit Card, Password & ID Stored in Plaintext
+🛑 Client-Side Sensitive Data Exposure on a Production Website – Full Credit Card, Password & ID Stored in Plaintext
 
-Real-world disclosure of a critical web security flaw on Hertz.com: full credit card details, login credentials, and ID numbers stored in plaintext in the browser’s memory. Discovered and responsibly disclosed via Hertz’s public VDP on HackerOne.
+Real-world disclosure of a critical web security flaw: full credit card details, login credentials, and ID numbers stored in plaintext in the browser’s memory. Discovered and responsibly disclosed via a public VDP on HackerOne.
 
 ⸻
 
 📌 Summary
 
-This repository documents a critical vulnerability discovered on hertz.com, where highly sensitive user data was stored in plaintext in the browser using sessionStorage and cookies, in violation of industry standards.
+This repository documents a critical vulnerability discovered on a production website of a global company, where highly sensitive user data was stored in plaintext in the browser using sessionStorage and cookies, in violation of industry standards.
 
 Exposed Data:
 	•	Full credit card number (PAN), CVV, expiration date
@@ -64,7 +64,7 @@ document.body.appendChild(stealthImage);
 
 🔁 Vendor Response
 
-The issue was responsibly disclosed via the Hertz Vulnerability Disclosure Program (VDP) on HackerOne.
+The issue was responsibly disclosed via a public Vulnerability Disclosure Program (VDP) on HackerOne.
 
 Initial triage feedback categorized the issue as Informative, stating:
 
@@ -98,5 +98,5 @@ cybernomad42
 
 📂 Repository Tags
 
-hertz bug-bounty pentesting sessionStorage plaintext-data credit-card-leak
+bug-bounty pentesting sessionStorage plaintext-data credit-card-leak
 client-side-vulnerability pci-dss owasp javascript-security cybersecurity
